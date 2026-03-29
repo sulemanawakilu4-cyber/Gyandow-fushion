@@ -1,86 +1,85 @@
-// ===== PRODUCTS & CART =====
-let products = JSON.parse(localStorage.getItem("products")) || [];
-let cart = [];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gyandow Collection</title>
+  <style>
+    body { font-family: Arial; margin:0; background:#f5f5f5; }
+    header { background:#000; color:#fff; padding:15px; text-align:center; }
+    .products { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:20px; padding:20px; }
+    .card { background:#fff; padding:15px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    .card img { width:100%; height:200px; object-fit:cover; }
+    button { background:black; color:white; border:none; padding:10px; cursor:pointer; margin-top:10px; width:100%; }
+    .cart { position:fixed; top:10px; right:10px; background:#fff; padding:15px; border-radius:10px; width:250px; }
+    .admin { padding:20px; background:#fff; margin:20px; border-radius:10px; }
+    input { padding:8px; margin:5px; width:90%; }
+  </style>
+</head>
+<script>
+// ===== YOUR JAVASCRIPT HERE =====
+</script>
+</body>
+</html>
+<body>
+<script src="script.js"></script>
+</body>
+<header>
+  <h1>Gyandow Collection</h1>
+  <p>Men's Fashion & Shoes</p>
+</header>
 
-// ===== DISPLAY PRODUCTS =====
-function displayProducts() {
+<div class="cart">
+  <h3>Cart</h3>
+  <ul id="cart-items"></ul>
+  <p><b>Total:</b> GHS <span id="total">0</span></p>
+  <button onclick="orderWhatsApp()">Order via WhatsApp</button>
+</div>
+
+<section class="admin">
+  <h3>Add Product (Admin)</h3>
+  <input type="text" id="name" placeholder="Product Name">
+  <input type="number" id="price" placeholder="Price">
+  <input type="text" id="image" placeholder="Image URL">
+  <button onclick="addProduct()">Add Product</button>
+</section>
+
+<section class="products" id="product-list"></section>
+
+<script>
+  let products = [];
+  let cart = [];
+
+  function displayProducts(){
     let list = document.getElementById("product-list");
     list.innerHTML = "";
-
-    products.forEach((p, index) => {
-        list.innerHTML += `
+    products.forEach((p, index)=>{
+      list.innerHTML += `
         <div class="card">
-            <img src="${p.img}" />
-            <h3>${p.name}</h3>
-            <p>GHS ${p.price}</p>
-            <button onclick="addToCart(${index})">Add to Cart</button>
+          <img src="${p.img}" />
+          <h3>${p.name}</h3>
+          <p>GHS ${p.price}</p>
+          <button onclick="addToCart(${index})">Add to Cart</button>
         </div>`;
     });
-}
+  }
 
-// ===== ADD PRODUCT =====
-function addProduct() {
+  function addProduct(){
     let name = document.getElementById("name").value;
     let price = document.getElementById("price").value;
     let img = document.getElementById("image").value;
 
     if(name && price && img){
-        products.push({name, price, img});
-
-        // SAVE permanently
-        localStorage.setItem("products", JSON.stringify(products));
-
-        displayProducts();
-        alert("Product Added!");
-
-        // clear inputs
-        document.getElementById("name").value = "";
-        document.getElementById("price").value = "";
-        document.getElementById("image").value = "";
+      products.push({name, price, img});
+      displayProducts();
+      alert("Product Added Successfully");
     } else {
-        alert("Fill all fields!");
+      alert("Please fill all fields");
     }
-}
+  }
 
-// ===== ADD TO CART =====
-function addToCart(index) {
+  function addToCart(index){
     cart.push(products[index]);
     updateCart();
-}
+  }
 
-// ===== UPDATE CART =====
-function updateCart() {
-    let cartItems = document.getElementById("cart-items");
-    let total = 0;
-
-    cartItems.innerHTML = "";
-
-    cart.forEach(item => {
-        total += Number(item.price);
-        cartItems.innerHTML += `<li>${item.name} - GHS ${item.price}</li>`;
-    });
-
-    document.getElementById("total").innerText = total;
-}
-
-// ===== WHATSAPP ORDER =====
-function orderWhatsApp() {
-    if(cart.length === 0){
-        alert("Cart is empty!");
-        return;
-    }
-
-    let message = "Hello, I want to order:\\n";
-
-    cart.forEach(item => {
-        message += item.name + " - GHS " + item.price + "\\n";
-    });
-
-    let phone = "233245812973"; // your number
-    let url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-
-    window.open(url, "_blank");
-}
-
-// ===== LOAD PRODUCTS ON START =====
-displayProducts();
